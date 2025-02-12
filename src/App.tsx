@@ -1,10 +1,10 @@
 import { useRoutes, BrowserRouter } from "react-router-dom";
-// import { ShoopingCartProvider } from "../../contexts";
-import Home from "./components/Home";
-import MyAccount from "./components/MyAccount"; 
-import MyOrder from "./components/MyOrder"; 
-import MyOrders from "./components/MyOrders"; 
-import NotFound from "./components/NotFound";
+import { ShoppingCartProvider } from "./contexts";
+import Home from "./pages/Home"; 
+import MyAccount from "./pages/MyAccount"; 
+import MyOrder from "./pages/MyOrder"; 
+import MyOrders from "./pages/MyOrders"; 
+import NotFound from "./pages/NotFound"; 
 import Navbar from "./components/Navbar"; 
 import SideMenu from "./components/SideMenu";
 
@@ -29,13 +29,13 @@ const AppRoutes = () => {
 
 function App() {
   return (
-    // <ShoopingCartProvider>
+    <ShoppingCartProvider>
       <BrowserRouter>
         <Navbar />
         <AppRoutes />
         <SideMenu />
       </BrowserRouter>
-    // </ShoopingCartProvider>
+     </ShoppingCartProvider>
   );
 }
 

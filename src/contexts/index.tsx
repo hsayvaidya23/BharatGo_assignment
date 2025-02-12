@@ -1,39 +1,150 @@
-import { createContext, useReducer, useContext } from "react";
+import { createContext, useState, useEffect, ReactNode } from "react";
+import { totalPrice } from "../utils/totalPrice";
 
-const ShoppingCartContext = createContext<any>(null);
+// Define a Product type
+interface Product {
+    id: number;
+    title: string;
+    price: number;
+    description: string;
+    category: string;
+    image: string;
+    // Add other product properties as needed
+}
 
-const initialState = {
-  cart: [],
-  order: [],
-  filteredItems: [],
-  searchTitleBar: "",
+// Define a User type
+interface User {
+    displayName: string | null;
+    email: string | null;
+    photoURL: string | null;
+}
+
+// Define an Order type
+interface Order {
+    id: string;
+    products: Product[];
+    date: string;
+    // Add other order properties as needed
+}
+
+interface ShoppingCartContextType {
+    isProductDetailOpen: boolean;
+    openProductDetail: () => void;
+    closeProductDetail: () => void;
+    isCheckoutSideMenuOpen: boolean;
+    openCheckOutSideMenu: () => void;
+    closeCheckOutSideMenu: () => void;
+    productToShow: Product | null;
+    setProductToShow: (product: Product | null) => void;
+    cartProducts: Product[];
+    setCartProducts: (products: Product[]) => void;
+    order: Order[];
+    setOrder: (order: Order[]) => void;
+    items: Product[] | null;
+    setItems: (items: Product[] | null) => void;
+    filteredItems: Product[] | null;
+    setFilteredItems: (items: Product[] | null) => void;
+    searchTitleBar: string | null;
+    setSearchTitleBar: (search: string | null) => void;
+    searchByCategory: string | null;
+    setSearchByCategory: (category: string | null) => void;
+    totalPriceOfProducts: number;
+    updateTotalPriceOfProducts: () => void;
+    user: User | null;
+    setUser: (user: User | null) => void;
+}
+
+const initialState: ShoppingCartContextType = {
+    isProductDetailOpen: false,
+    openProductDetail: () => { },
+    closeProductDetail: () => { },
+    isCheckoutSideMenuOpen: false,
+    openCheckOutSideMenu: () => { },
+    closeCheckOutSideMenu: () => { },
+    productToShow: null,
+    setProductToShow: () => { },
+    cartProducts: [],
+    setCartProducts: () => { },
+    order: [],
+    setOrder: () => { },
+    items: null,
+    setItems: () => { },
+    filteredItems: null,
+    setFilteredItems: () => { },
+    searchTitleBar: null,
+    setSearchTitleBar: () => { },
+    searchByCategory: null,
+    setSearchByCategory: () => { },
+    totalPriceOfProducts: 0,
+    updateTotalPriceOfProducts: () => { },
+    user: null,
+    setUser: () => { },
 };
 
-const reducer = (state: any, action: any) => {
-  switch (action.type) {
-    case "ADD_TO_CART":
-      return { ...state, cart: [...state.cart, action.payload] };
-    case "REMOVE_FROM_CART":
-      return { ...state, cart: state.cart.filter((item: { id: any }) => item.id !== action.payload) };
-    case "SET_FILTERED_ITEMS":
-      return { ...state, filteredItems: action.payload };
-    case "SET_SEARCH_TITLE_BAR":
-      return { ...state, searchTitleBar: action.payload };
-    default:
-      return state;
-  }
-};
+const ShoppingCartContext = createContext<ShoppingCartContextType>(initialState);
 
-const ShoppingCartProvider = ({ children }: any) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+interface ShoppingCartProviderProps {
+    children: ReactNode;
+}
 
-  return (
-    <ShoppingCartContext.Provider value={{ state, dispatch }}>
-      {children}
-    </ShoppingCartContext.Provider>
-  );
-};
+function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
+    const [isProductDetailOpen, setIsProductDetailOpen] = useState(false);
+    const [isCheckoutSideMenuOpen, setCheckOutMenuOpen] = useState(false);
+    const [productToShow, setProductToShow] = useState<Product | null>(null);
+    const [cartProducts, setCartProducts] = useState<Product[]>([]);
+    const [order, setOrder] = useState<Order[]>([]);
+    const [items, setItems] = useState<Product[] | null>(null);
+    const [filteredItems, setFilteredItems] = useState<Product[] | null>(null);
+    const [searchTitleBar, setSearchTitleBar] = useState<string | null>(null);
+    const [searchByCategory, setSearchByCategory] = useState<string | null>(null);
+    const [totalPriceOfProducts, setTotalPriceOfProducts] = useState(0);
+    const [user, setUser] = useState<User | null>(null);
 
-const useShoppingCart = () => useContext(ShoppingCartContext);
+    const openProductDetail = () => setIsProductDetailOpen(true);
+    const closeProductDetail = () => setIsProductDetailOpen(false);
+    const openCheckOutSideMenu = () => setCheckOutMenuOpen(true);
+    const closeCheckOutSideMenu = () => setCheckOutMenuOpen(false);
 
-export { ShoppingCartProvider, useShoppingCart };
+    const updateTotalPriceOfProducts = () => {
+        setTotalPriceOfProducts(totalPrice(cartProducts));
+    };
+
+    useEffect(() => {
+        updateTotalPriceOfProducts();
+    }, [cartProducts]);
+
+    return (
+        <ShoppingCartContext.Provider
+            value={{
+                isProductDetailOpen,
+                openProductDetail,
+                closeProductDetail,
+                isCheckoutSideMenuOpen,
+                openCheckOutSideMenu,
+                closeCheckOutSideMenu,
+                productToShow,
+                setProductToShow,
+                cartProducts,
+                setCartProducts,
+                order,
+                setOrder,
+                items,
+                setItems,
+                filteredItems,
+                setFilteredItems,
+                searchTitleBar,
+                setSearchTitleBar,
+                searchByCategory,
+                setSearchByCategory,
+                totalPriceOfProducts,
+                updateTotalPriceOfProducts,
+                user,
+                setUser,
+            }}
+        >
+            {children}
+        </ShoppingCartContext.Provider>
+    );
+}
+
+export { ShoppingCartProvider, ShoppingCartContext };
