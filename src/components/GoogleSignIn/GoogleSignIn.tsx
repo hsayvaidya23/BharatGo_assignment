@@ -21,16 +21,16 @@ function GoogleSignIn() {
     }
   };
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      context.setUser(null);
-      localStorage.removeItem('user'); // Clear from local storage
-      console.log("signout successfully!");
-    } catch (error) {
-      console.error("Sign Out Error:", error);
-    }
-  };
+  // const handleSignOut = async () => {
+  //   try {
+  //     await signOut(auth);
+  //     context.setUser(null);
+  //     localStorage.removeItem('user'); // Clear from local storage
+  //     console.log("signout successfully!");
+  //   } catch (error) {
+  //     console.error("Sign Out Error:", error);
+  //   }
+  // };
 
   return (
     <button

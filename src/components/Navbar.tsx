@@ -1,6 +1,5 @@
 import {
   ArchiveBoxIcon,
-  InboxIcon,
   ShoppingCartIcon,
   UserCircleIcon,
   UserIcon,
