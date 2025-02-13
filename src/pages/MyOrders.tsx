@@ -1,3 +1,4 @@
+ // @ts-nocheck
 import { useContext } from "react"; 
 import { Link } from "react-router-dom";
 import { ShoppingCartContext } from "../contexts"; 

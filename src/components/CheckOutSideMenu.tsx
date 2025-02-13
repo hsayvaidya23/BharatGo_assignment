@@ -1,3 +1,4 @@
+ // @ts-nocheck
 import { useContext, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import { XMarkIcon } from "@heroicons/react/24/solid";

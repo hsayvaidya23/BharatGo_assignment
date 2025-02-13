@@ -10,6 +10,7 @@ import { useContext, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { ShoppingCartContext } from "../contexts";
 import GoogleSignIn from "./GoogleSignIn/GoogleSignIn";
+import { auth, signOut } from '../firebase/firebase'
 
 function Navbar() {
   const activeStyle = "underline underline-offset-8";
@@ -24,7 +25,9 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      // await context.signOut(); // Assuming you have a signOut method in your context
+      await signOut(auth); 
+      context.setUser(null);
+      localStorage.removeItem('user'); 
       closeEverything();
     } catch (error) {
       console.error("Logout failed:", error);
@@ -186,79 +189,79 @@ function Navbar() {
             event.stopPropagation();
           }}
         />
-          <div
-            className={`${
-              userMenuIsActive ? "inline-block" : "hidden"
-            } w-64 h-auto absolute bg-white border border-black rounded-lg right-0 p-2`}
-          >
-            <ul className="flex flex-col items-center w-full gap-4 py-2">
-              {context.user ? (
-                <>
-                  <li className="flex items-center gap-2 w-full">
-                    <img
-                      src={context.user.photoURL || "/default-avatar.png"}
-                      alt={context.user.displayName || "User"}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span className="text-sm">{context.user.displayName || "Guest"}</span>
-                  </li>
-                  <li className="flex gap-2 w-full">
-                    <ArchiveBoxIcon className="h-6 w-6 text-black-500" />
-                    <NavLink
-                      to="/my-orders"
-                      onClick={() => {
-                        context.cleanTitlebarState();
-                        closeEverything();
-                      }}
-                      className={({ isActive }) => (isActive ? activeStyle : undefined)}
-                    >
-                      <p>My Orders</p>
-                    </NavLink>
-                  </li>
-                  <li className="flex gap-2 w-full">
-                    <UserIcon className="h-6 w-6 text-black-500" />
-                    <NavLink
-                      to="/my-account"
-                      onClick={() => {
-                        context.cleanTitlebarState();
-                        closeEverything();
-                      }}
-                      className={({ isActive }) => (isActive ? activeStyle : undefined)}
-                    >
-                      <p>My Account</p>
-                    </NavLink>
-                  </li>
-                  <li className="w-full">
-                    <p className="flex gap-2">
-                      <ShoppingCartIcon
-                        onClick={() => {
-                          context.cleanTitlebarState();
-                          context.isCheckoutSideMenuOpen
-                            ? context.closeCheckOutSideMenu()
-                            : context.openCheckOutSideMenu();
-                        }}
-                        className="h-6 w-6 text-black-500 cursor-pointer"
-                      />
-                      {context.cartProducts.length}
-                    </p>
-                  </li>
-                  <li className="w-full">
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 text-red-600 hover:text-red-800"
-                    >
-                      <ArrowRightOnRectangleIcon className="h-6 w-6" />
-                      Logout
-                    </button>
-                  </li>
-                </>
-              ) : (
-                <li className="w-full">
-                  <GoogleSignIn />
+        <div
+          className={`${
+            userMenuIsActive ? "inline-block" : "hidden"
+          } w-64 h-auto absolute bg-white border border-black rounded-lg right-0 p-2`}
+        >
+          <ul className="flex flex-col items-center w-full gap-4 py-2">
+            {context.user ? (
+              <>
+                <li className="flex items-center gap-2 w-full">
+                  <img
+                    src={context.user.photoURL || "/default-avatar.png"}
+                    alt={context.user.displayName || "User"}
+                    className="w-8 h-8 rounded-full"
+                  />
+                  <span className="text-sm">{context.user.displayName || "Guest"}</span>
                 </li>
-              )}
-            </ul>
-          </div>
+                <li className="flex gap-2 w-full">
+                  <ArchiveBoxIcon className="h-6 w-6 text-black-500" />
+                  <NavLink
+                    to="/my-orders"
+                    onClick={() => {
+                      context.cleanTitlebarState();
+                      closeEverything();
+                    }}
+                    className={({ isActive }) => (isActive ? activeStyle : undefined)}
+                  >
+                    <p>My Orders</p>
+                  </NavLink>
+                </li>
+                <li className="flex gap-2 w-full">
+                  <UserIcon className="h-6 w-6 text-black-500" />
+                  <NavLink
+                    to="/my-account"
+                    onClick={() => {
+                      context.cleanTitlebarState();
+                      closeEverything();
+                    }}
+                    className={({ isActive }) => (isActive ? activeStyle : undefined)}
+                  >
+                    <p>My Account</p>
+                  </NavLink>
+                </li>
+                <li className="w-full">
+                  <p className="flex gap-2">
+                    <ShoppingCartIcon
+                      onClick={() => {
+                        context.cleanTitlebarState();
+                        context.isCheckoutSideMenuOpen
+                          ? context.closeCheckOutSideMenu()
+                          : context.openCheckOutSideMenu();
+                      }}
+                      className="h-6 w-6 text-black-500 cursor-pointer"
+                    />
+                    {context.cartProducts.length}
+                  </p>
+                </li>
+                <li className="w-full">
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 cursor-pointer text-red-600 hover:text-red-800"
+                  >
+                    <ArrowRightOnRectangleIcon className="h-6 w-6" />
+                    Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <li className="w-full">
+                <GoogleSignIn />
+              </li>
+            )}
+          </ul>
+        </div>
       </ul>
     </nav>
   );

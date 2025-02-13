@@ -16,6 +16,7 @@ function Home() {
       try {
         const data = await fetchProducts();
         context.setItems(data);
+        context.setFilteredItems(data); 
       } catch (err) {
         setError(err instanceof Error ? err : new Error('An error occurred'));
       } finally {
@@ -25,6 +26,16 @@ function Home() {
 
     getProducts();
   }, []);
+
+  useEffect(() => {
+    if (!context.items) return;
+
+    const searchTerm = context.searchTitleBar?.toLowerCase() || '';
+    const filtered = context.items.filter(item => 
+      item.title.toLowerCase().includes(searchTerm)
+    );
+    context.setFilteredItems(filtered);
+  }, [context.searchTitleBar, context.items]);
 
   const renderView = () => {
     if (loading) {
@@ -39,10 +50,16 @@ function Home() {
       );
     }
 
-    if (context.filteredItems && context.filteredItems.length > 0) {
+    if (!context.items) {
+      return <p className="text-center text-gray-600">No products found</p>;
+    }
+
+    const itemsToDisplay = context.filteredItems || context.items;
+
+    if (itemsToDisplay.length > 0) {
       return (
         <div className="grid place-items-center justify-center xl:gap-4 md:gap-3 sm:gap-2 xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 w-full max-w-screen-lg m">
-          {context.filteredItems.map((item) => (
+          {itemsToDisplay.map((item) => (
             <Card key={item.id} data={item} />
           ))}
         </div>
@@ -61,19 +78,20 @@ function Home() {
 
   return (
     <Layout>
-    <div className="flex flex-col items-center">
-      <div className="flex items-center justify-center relative w-80 mb-4">
-        <h1 className="text-2xl font-bold">Home</h1>
+      <div className="flex flex-col items-center">
+        <div className="flex items-center justify-center relative w-80 mb-4">
+          <h1 className="text-2xl font-bold">Home</h1>
+        </div>
+        <input
+          className="rounded-lg border border-black w-80 p-4 mb-10 focus:outline-none"
+          type="text"
+          placeholder="Search a product"
+          value={context.searchTitleBar || ''}
+          onChange={(event) => context.setSearchTitleBar(event.target.value)}
+        />
+        {renderView()}
+        <ProductDetail />
       </div>
-      <input
-        className="rounded-lg border border-black w-80 p-4 mb-10 focus:outline-none"
-        type="text"
-        placeholder="Search a product"
-        onChange={(event) => context.setSearchTitleBar(event.target.value)}
-      />
-      {renderView()}
-      <ProductDetail />
-    </div>
     </Layout>
   );
 }

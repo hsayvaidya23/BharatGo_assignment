@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { auth, googleProvider, signInWithPopup, signOut } from "../../firebase/firebase";
-import { ShoppingCartContext } from "../../contexts"; 
+import { ShoppingCartContext } from "../../contexts";
 
 function GoogleSignIn() {
   const context = useContext(ShoppingCartContext);
@@ -9,11 +9,13 @@ function GoogleSignIn() {
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      context.setUser({
+      const userData = {
         displayName: user.displayName,
         email: user.email,
         photoURL: user.photoURL,
-      });
+      };
+      context.setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData)); // Save to local storage
     } catch (error) {
       console.error("Google Sign-In Error:", error);
     }
@@ -23,7 +25,8 @@ function GoogleSignIn() {
     try {
       await signOut(auth);
       context.setUser(null);
-      console.log("signout successfully!")
+      localStorage.removeItem('user'); // Clear from local storage
+      console.log("signout successfully!");
     } catch (error) {
       console.error("Sign Out Error:", error);
     }

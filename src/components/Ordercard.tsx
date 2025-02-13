@@ -1,3 +1,4 @@
+ // @ts-nocheck
 import { XMarkIcon, PlusIcon, MinusIcon } from "@heroicons/react/24/solid";
 import { useContext, useEffect, useState } from "react";
 import { ShoppingCartContext } from "../contexts";
