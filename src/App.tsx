@@ -6,7 +6,7 @@ import MyOrder from "./pages/MyOrder";
 import MyOrders from "./pages/MyOrders"; 
 import NotFound from "./pages/NotFound"; 
 import Navbar from "./components/Navbar"; 
-import SideMenu from "./components/SideMenu";
+import SideMenu from "./components/CheckOutSideMenu";
 
 const AppRoutes = () => {
   let routes = useRoutes([

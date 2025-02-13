@@ -52,6 +52,7 @@ interface ShoppingCartContextType {
     updateTotalPriceOfProducts: () => void;
     user: User | null;
     setUser: (user: User | null) => void;
+    cleanTitlebarState: () => void;
 }
 
 const initialState: ShoppingCartContextType = {
@@ -79,6 +80,7 @@ const initialState: ShoppingCartContextType = {
     updateTotalPriceOfProducts: () => { },
     user: null,
     setUser: () => { },
+    cleanTitlebarState: () => { },
 };
 
 const ShoppingCartContext = createContext<ShoppingCartContextType>(initialState);
@@ -107,6 +109,11 @@ function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
 
     const updateTotalPriceOfProducts = () => {
         setTotalPriceOfProducts(totalPrice(cartProducts));
+    };
+
+    const cleanTitlebarState = () => {
+        setSearchTitleBar(null);
+        setFilteredItems(items);
     };
 
     useEffect(() => {
@@ -140,6 +147,7 @@ function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
                 updateTotalPriceOfProducts,
                 user,
                 setUser,
+                cleanTitlebarState,
             }}
         >
             {children}

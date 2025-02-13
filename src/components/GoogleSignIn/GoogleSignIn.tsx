@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { auth, googleProvider, signInWithPopup } from "../../firebase/firebase";
+import { auth, googleProvider, signInWithPopup, signOut } from "../../firebase/firebase";
 import { ShoppingCartContext } from "../../contexts"; 
 
 function GoogleSignIn() {
@@ -16,6 +16,16 @@ function GoogleSignIn() {
       });
     } catch (error) {
       console.error("Google Sign-In Error:", error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      context.setUser(null);
+      console.log("signout successfully!")
+    } catch (error) {
+      console.error("Sign Out Error:", error);
     }
   };
 

@@ -1,3 +1,8 @@
-export const totalPrice = (products) => {
-    return products.reduce((sum, product) => sum + product.price * product.count, 0);
+interface Product {
+  price: number;
+  count: number;
+}
+
+export const totalPrice = (products: Product[]) => {
+    return products.reduce((sum: number, product: Product) => sum + product.price * product.count, 0);
 };
