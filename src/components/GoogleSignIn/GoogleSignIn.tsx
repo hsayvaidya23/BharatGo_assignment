@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { auth, googleProvider, signInWithPopup, signOut } from "../../firebase/firebase";
+import { auth, googleProvider, signInWithPopup } from "../../firebase/firebase";
 import { ShoppingCartContext } from "../../contexts";
 
 function GoogleSignIn() {
